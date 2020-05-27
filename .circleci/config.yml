@@ -43,7 +43,8 @@ jobs:
            export ALLOW_MISSING_DEPENDENCIES=true
            export TW_DEFAULT_LANGUAGE="en"
            export LC_ALL="C"
-           source build/envsetup.sh
+           chmod +x vendor/batik/build/tools/roomservice.py || echo uwu
+           source build/envsetup.sh || echo uwu
            lunch omni_${DEVICE}-eng
            telegram/telegram -t $TOKEN -c $CHAT_ID -H "⚙️ Build Started for $DEVICE"
            make recoveryimage -j$(nproc --all)
