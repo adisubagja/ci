@@ -1,0 +1,22 @@
+#!/bin/bash
+
+function botInit() {
+  export tgbot="telegram/telegram"
+}
+
+function sendMessage() {
+  $tgbot -t $TOKEN -c $CHAT_ID -H \
+      "$(
+          for POST in "${@}"; do
+              echo "${POST}"
+          done
+      )"
+}
+
+function sendDocument() {
+  ZIP=$1
+  $tgbot -t $TOKEN -c $CHAT_ID -f "$ZIP"
+}
+
+# Run it by default
+botInit
