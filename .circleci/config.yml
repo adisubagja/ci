@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  shrp_compile:
+  compile:
    docker:
       - image: ubuntu:18.04
    environment:
@@ -24,7 +24,7 @@ jobs:
       - run:
           name: Repo init
           command: |
-           repo init -u git://github.com/SKYHAWK-Recovery-Project/platform_manifest_twrp_omni.git -b android-9.0 --depth=1
+           repo init --depth=1 -u git://github.com/BatikRecovery/br_manifest.git -b android-9.0
       - run:
           name: Repo sync
           command: |
@@ -34,9 +34,9 @@ jobs:
           command: |
            if [ -d "device/xiaomi/ugglite" ]; then
                rm device/xiaomi/ugglite -rf
-               git clone https://github.com/adislice/twrp_device_xiaomi_ugglite -b android-9.0 device/xiaomi/ugglite
+               git clone https://github.com/adislice/twrp_device_xiaomi_ugglite -b br device/xiaomi/ugglite
            else
-               git clone https://github.com/adislice/twrp_device_xiaomi_ugglite -b android-9.0 device/xiaomi/ugglite
+               git clone https://github.com/adislice/twrp_device_xiaomi_ugglite -b br device/xiaomi/ugglite
            fi
       - run:
           name: Building
@@ -74,5 +74,5 @@ workflows:
   version: 2.1
   cooking:
     jobs:
-      - approve_build:
-          type: approval
+      - compile
+      
