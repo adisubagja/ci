@@ -20,7 +20,6 @@ jobs:
            git config --global user.email $GIT_EMAIL
            git config --global color.ui false
            git clone https://github.com/fabianonline/telegram.sh telegram
-           source ./bot
       - run:
           name: Repo init
           command: |
@@ -41,14 +40,12 @@ jobs:
       - run:
           name: Building
           command: |
-           source ./bot
-           botInit
            export ALLOW_MISSING_DEPENDENCIES=true
            export TW_DEFAULT_LANGUAGE="en"
            export LC_ALL="C"
            source build/envsetup.sh
            lunch omni_${DEVICE}-eng
-           sendMessage "⚙️ Build Started for $DEVICE"
+           telegram/telegram -t $TOKEN -c $CHAT_ID -H "⚙️ Build Started for $DEVICE"
            make recoveryimage -j$(nproc --all)
            ls -lh $(pwd)/out/target/product/${DEVICE}/
            export BUILDFILE_ZIP=$(find $(pwd)/out/target/product/${DEVICE}/*ugglite*.zip 2>/dev/null)
@@ -58,17 +55,16 @@ jobs:
            mkdir ${UPLOAD_PATH}
            cp $BUILDFILE_ZIP $UPLOAD_PATH
            if [ -f $BUILDFILE_ZIP ]; then
-             sendMessage "✅ Build Finished Successfully"
-             sendDocument "$BUILDFILE_ZIP"
+             telegram/telegram -t $TOKEN -c $CHAT_ID -H "✅ Build Finished Successfully"
+             telegram/telegram -t $TOKEN -c $CHAT_ID -f "$BUILDFILE_ZIP"
            else
-             sendMessage "❌ Build Failed"
+             telegram/telegram -t $TOKEN -c $CHAT_ID -H "❌ Build Failed"
              exit 1
            fi
       - run:
           name: Fail.
           command: |
-           source ./bot
-           sendMessage "❌ Build Failed"
+           telegram/telegram -t $TOKEN -c $CHAT_ID -H "❌ Build Failed"
           when: on_fail
 workflows:
   version: 2.1
